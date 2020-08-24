@@ -12,6 +12,7 @@ html {
 }
 
 .calculator {
+  background-color: #73def1;
   border: 1px solid #ccc;
   border-radius: 5px;
   position: absolute;
@@ -38,7 +39,7 @@ button {
   background-color: #fff;
   border-radius: 3px;
   border: 1px solid #c4c4c4;
-  background-color: transparent;
+  background-color: white;
   font-size: 2rem;
   color: #333;
   background-image: linear-gradient(
