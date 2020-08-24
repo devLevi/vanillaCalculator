@@ -18,6 +18,10 @@ inputDigit = (digit) => {
 }
 
 inputDecimal = (dot) => {
+  if (calculator.waitingForSecondOperand === true) {
+    calculator.displayValue = '0.'
+    calculator.waitingForSecondOperand = false
+  }
   if (!calculator.displayValue.includes(dot)) {
     calculator.displayValue += dot
   }
@@ -26,11 +30,42 @@ inputDecimal = (dot) => {
 handleOperator = (nextOperator) => {
   const { firstOperand, displayValue, operator } = calculator
   const inputValue = parseFloat(displayValue)
+  if (operator && calculator.waitingForSecondOperand) {
+    calculator.operator = nextOperator
+    console.log(calculator)
+    return
+  }
   if (firstOperand === null && !isNaN(inputValue)) {
     calculator.firstOperand = inputValue
+  } else if (operator) {
+    const result = calculate(firstOperand, inputValue, operator)
+    calculator.displayValue = String(result)
+    calculator.firstOperand = result
   }
   calculator.waitingForSecondOperand = true
   calculator.operator = nextOperator
+  console.log(calculator)
+}
+
+calculate = (firstOperand, secondOperand, operator) => {
+  if (operator === '+') {
+    return firstOperand + secondOperand
+  } else if (operator === '-') {
+    return firstOperand - secondOperand
+  } else if (operator === '*') {
+    return firstOperand * secondOperand
+  } else if (operator === '/') {
+    return firstOperand / secondOperand
+  }
+
+  return secondOperand
+}
+
+resetCalculator = () => {
+  calculator.displayValue = '0'
+  calculator.firstOperand = null
+  calculator.waitingForSecondOperand = false
+  calculator.operator = null
   console.log(calculator)
 }
 
@@ -43,10 +78,6 @@ updateDisplay()
 
 const keys = document.querySelector('.calculator-keys')
 keys.addEventListener('click', (event) => {
-  const { target } = event
-  if (!target.matches('button')) {
-    return
-  }
   if (target.classList.contains('operator')) {
     handleOperator(target.value)
     updateDisplay()
@@ -58,7 +89,8 @@ keys.addEventListener('click', (event) => {
     return
   }
   if (target.classList.contains('all-clear')) {
-    console.log('clear', target.value)
+    resetCalculator()
+    updateDisplay()
     return
   }
   inputDigit(target.value)
