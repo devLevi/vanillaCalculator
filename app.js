@@ -78,21 +78,30 @@ updateDisplay()
 
 const keys = document.querySelector('.calculator-keys')
 keys.addEventListener('click', (event) => {
-  if (target.classList.contains('operator')) {
-    handleOperator(target.value)
-    updateDisplay()
+  const { target } = event
+  const { value } = target
+  if (!target.matches('button')) {
     return
   }
-  if (target.classList.contains('decimal')) {
-    inputDecimal(target.value)
-    updateDisplay()
-    return
+  switch (value) {
+    case '+':
+    case '-':
+    case '*':
+    case '/':
+    case '=':
+      handleOperator(value)
+      break
+    case '.':
+      inputDecimal(value)
+      break
+    case 'all-clear':
+      resetCalculator()
+      break
+    default:
+      if (Number.isInteger(parseFloat(value))) {
+        inputDigit(value)
+      }
   }
-  if (target.classList.contains('all-clear')) {
-    resetCalculator()
-    updateDisplay()
-    return
-  }
-  inputDigit(target.value)
+
   updateDisplay()
 })
